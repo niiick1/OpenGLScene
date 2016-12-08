@@ -1,10 +1,11 @@
 #ifndef GLSLMESH_H
 #define GLSLMESH_H
 
+#include <vector>
+
 #include "OBJReader/Mesh.h"
 #include "GLSLGroup.h"
 #include "Data/ObjectPosition.h"
-#include <vector>
 
 class GLSLMesh
 {

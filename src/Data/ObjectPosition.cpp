@@ -98,39 +98,6 @@ void ObjectPosition::rotate(float xAngle, float yAngle, float zAngle)
 
     rotation[3]  =  rotation[7] = rotation[11] = rotation[12] = rotation[13] = rotation[14] = 0;
     rotation[15] =  1;
-
-//    rotation[0]  =   C * E;
-//    rotation[4]  =  -C * F;
-//    rotation[8]  =   D;
-//    rotation[1]  =  BD * E + A * F;
-//    rotation[5]  = -BD * F + A * E;
-//    rotation[9]  =  -B * C;
-//    rotation[2]  = -AD * E + B * F;
-//    rotation[6]  =  AD * F + B * E;
-//    rotation[10] =   A * C;
-//
-//    rotation[3]  =  rotation[7] = rotation[11] = rotation[12] = rotation[13] = rotation[14] = 0;
-//    rotation[15] =  1;
-
-//    float A = cos(this->yAngle),
-//        B = sin(this->yAngle);
-//
-//    rotation[0] = A;
-//    rotation[1] = 0;
-//    rotation[2] = B;
-//    rotation[3] = 0;
-//    rotation[4] = 0;
-//    rotation[5] = 1;
-//    rotation[6] = 0;
-//    rotation[7] = 0;
-//    rotation[8] = -B;
-//    rotation[9] = 0;
-//    rotation[10] = A;
-//    rotation[11] = 0;
-//    rotation[12] = 0;
-//    rotation[13] = 0;
-//    rotation[14] = 0;
-//    rotation[15] = 1;
 }
 
 float* ObjectPosition::getRotationMatrix()

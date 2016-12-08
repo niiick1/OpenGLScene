@@ -29,23 +29,6 @@ Camera::~Camera()
 
 void Camera::translate(float x, float y, float z)
 {
-//    float translationMat[16] = {0};
-//
-//    translationMat[0] = 1;
-//    translationMat[5] = 1;
-//    translationMat[10] = 1;
-//    translationMat[15] = 1;
-//
-//    translationMat[12] = x;
-//    translationMat[13] = y;
-//    translationMat[14] = z;
-//
-//    Matrix4 translationMatrix(translationMat);
-//
-//    Vector4 position = translationMatrix * Vector4(eye, 1.f);
-//
-//    eye = position.xyz();
-//    target = (translationMatrix * Vector4(target, 1.f)).xyz();
     eye = Vector3(eye.x + x, eye.y + y, eye.z + z);
     target = Vector3(target.x + x, target.y + y, target.z + z);
 }

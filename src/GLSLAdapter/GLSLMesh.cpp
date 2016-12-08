@@ -61,9 +61,7 @@ void GLSLMesh::convert(const Mesh& m)
 
         Material material = group.getMaterial();
 
-//        if (material != nullptr) {
-            glslGroup.setMaterialName(material.getName());
-//        }
+        glslGroup.setMaterialName(material.getName());
 
         this->groups.push_back(glslGroup);
     }

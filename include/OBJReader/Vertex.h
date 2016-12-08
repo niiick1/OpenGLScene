@@ -2,7 +2,6 @@
 #define VERTEX_H
 
 #include <iostream>
-#include <iomanip>
 
 class Vertex
 {

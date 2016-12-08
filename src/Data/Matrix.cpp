@@ -41,13 +41,6 @@ Matrix4 Matrix4::operator*(const Matrix4& m1)
 
         for (int y = 0; y < SIZE; y++) {
             r[column + y] = m[column]*m1[y] + m[column + 1]*m1[y + SIZE] + m[column + 2]*m1[y + SIZE*2] + m[column + 3]*m1[y + SIZE*3];
-
-//            r[0] = m1[0]*m2[0] + m1[1]*m2[4] + m1[2]*m2[8] + m1[3]*m2[12];
-//            r[1] = m1[0]*m2[1] + m1[1]*m2[5] + m1[2]*m2[9] + m1[3]*m2[13];
-//            r[2] = m1[0]*m2[2] + m1[1]*m2[6] + m1[2]*m2[10] + m1[3]*m2[14];
-//            r[3] = m1[0]*m2[3] + m1[1]*m2[7] + m1[2]*m2[11] + m1[3]*m2[15];
-//
-//            r[4] = m1[4]*m2[0] + m1[5]*m2[4] + m1[6]*m2[8] + m1[7]*m2[12];
         }
     }
 

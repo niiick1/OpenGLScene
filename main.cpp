@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <vector>
-#include <string>
 
 #include "OBJReader/OBJReader.h"
 #include "OBJReader/Mesh.h"
@@ -14,24 +13,16 @@
 #include "Data/ObjectPosition.h"
 #include "Camera/Projection.h"
 #include "Camera/View.h"
-#include "MaterialLibrary/MaterialLibrary.h"
-
-#define _USE_MATH_DEFINES
-
-#include <cmath>
-
 #include "Camera/Camera.h"
+#include "MaterialLibrary/MaterialLibrary.h"
 
 using namespace std;
 
-Vector3 eye(0, 25, 35);
-//Vector3 eye(0, 0, 6);
-Vector3 target(0, 0, 0);
-Vector3 up(0, 1, 0);
+Camera c(Vector3(0, 25, 35), // Eye
+           Vector3(0, 0, 0), // Target
+           Vector3(0, 1, 0)); // Up
 
-Camera c(eye, target, up);
-
-ObjectPosition meshPos(0, 0.5, 0);
+ObjectPosition currentObjectPosition(0, 0.5, 0);
 
 struct Light {
     float position[4] = {0};
@@ -129,51 +120,51 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
 
         if (key == GLFW_KEY_I) {
-            meshPos.rotate(-objRotateSpeed, 0, 0);
+            currentObjectPosition.rotate(-objRotateSpeed, 0, 0);
         }
 
         if (key == GLFW_KEY_K) {
-            meshPos.rotate(objRotateSpeed, 0, 0);
+            currentObjectPosition.rotate(objRotateSpeed, 0, 0);
         }
 
         if (key == GLFW_KEY_J) {
-            meshPos.rotate(0, objRotateSpeed, 0);
+            currentObjectPosition.rotate(0, objRotateSpeed, 0);
         }
 
         if (key == GLFW_KEY_L) {
-            meshPos.rotate(0, -objRotateSpeed, 0);
+            currentObjectPosition.rotate(0, -objRotateSpeed, 0);
         }
 
         if (key == GLFW_KEY_U) {
-            meshPos.rotate(0, 0, -objRotateSpeed);
+            currentObjectPosition.rotate(0, 0, -objRotateSpeed);
         }
 
         if (key == GLFW_KEY_O) {
-            meshPos.rotate(0, 0, objRotateSpeed);
+            currentObjectPosition.rotate(0, 0, objRotateSpeed);
         }
 
         if (key == GLFW_KEY_T) {
-            meshPos.translate(0, 0, -objMoveSpeed);
+            currentObjectPosition.translate(0, 0, -objMoveSpeed);
         }
 
         if (key == GLFW_KEY_G) {
-            meshPos.translate(0, 0, objMoveSpeed);
+            currentObjectPosition.translate(0, 0, objMoveSpeed);
         }
 
         if (key == GLFW_KEY_F) {
-            meshPos.translate(-objMoveSpeed, 0, 0);
+            currentObjectPosition.translate(-objMoveSpeed, 0, 0);
         }
 
         if (key == GLFW_KEY_H) {
-            meshPos.translate(objMoveSpeed, 0, 0);
+            currentObjectPosition.translate(objMoveSpeed, 0, 0);
         }
 
         if (key == GLFW_KEY_R) {
-            meshPos.translate(0, objMoveSpeed, 0);
+            currentObjectPosition.translate(0, objMoveSpeed, 0);
         }
 
         if (key == GLFW_KEY_V) {
-            meshPos.translate(0, -objMoveSpeed, 0);
+            currentObjectPosition.translate(0, -objMoveSpeed, 0);
         }
     }
 }
@@ -210,38 +201,22 @@ int main()
     std::vector<Material> materials;
     std::vector<Mesh*> objects;
 
-//    std::vector<Material> materials0;
-//    std::vector<Mesh*> objects0;
-
     OBJReader reader;
     reader.getMeshFromFile(&materials, &objects, "resources/models/ground.obj");
     reader.getMeshFromFile(&materials, &objects, "resources/models/mesa.obj");
 
     MaterialLibrary materialLibrary;
     materialLibrary.addMaterial(materials);
-//    materialLibrary.addMaterial(materials0);
 
    std::vector<GLSLMesh> meshes;
 
-//    GLSLMesh meshes[2];
-//    GLSLMesh m = *(objects[0]);
-//    GLSLMesh m0 = *(objects[1]);
-    for (int x = 0; x < objects.size(); x++) {
+    for (size_t x = 0; x < objects.size(); x++) {
         GLSLMesh mesh(*objects[x]);
-//        meshes[x] = mesh;
+
         meshes.push_back(mesh);
     }
 
-//    for (int x = 0; x < objects0.size(); x++) {
-//        GLSLMesh mesh(*objects0[x]);
-//        meshes[x] = mesh;
-//        meshes.push_back(mesh);
-//    }
-
-//    GLSLMesh mesh = meshes[0];
-//    GLSLMesh mesh = meshes[0];
-//    GLSLMesh mesh(*objects[0]);
-//    mesh.setPosition(meshPos);
+    GLSLMesh* currentObject = &meshes[1];
 
     Projection projection;
     projection.setPerspective(45, wWidth / wHeight, 0.1, 100.0);
@@ -253,30 +228,27 @@ int main()
     light.setPosition(0, 5, 10, 0);
     light.setAmbient(1, 1, 1);
     light.setDiffuse(1, 1, 1);
-//    light.setAmbient(0, 0, 0);
-//    light.setDiffuse(0, 0, 0);
     light.setSpecular(1, 1, 1);
 
     // Shader compilation
     ShaderLoader sl;
     GLuint programID = sl.load("resources/shaders/vertexShader.glsl", "resources/shaders/fragmentShader.glsl");
 
-    int projMatrixLocation = glGetUniformLocation(programID, "proj");
-    int viewMatrixLocation = glGetUniformLocation(programID, "view");
-    int modelTMatrixLocation = glGetUniformLocation(programID, "modelT");
-    int modelRMatrixLocation = glGetUniformLocation(programID, "modelR");
-    int lightAmbient = glGetUniformLocation(programID, "light.ambient");
-    int lightDiffuse = glGetUniformLocation(programID, "light.diffuse");
-    int lightPosition = glGetUniformLocation(programID, "light.position");
-    int lightSpecular = glGetUniformLocation(programID, "light.specular");
-    int materialAmbient = glGetUniformLocation(programID, "material.ambientColor");
-    int materialDiffuse = glGetUniformLocation(programID, "material.diffuseColor");
-    int materialSpecular = glGetUniformLocation(programID, "material.specularColor");
-    int materialSpecularExp = glGetUniformLocation(programID, "material.specularExponent");
-    int eyeLocation = glGetUniformLocation(programID, "eyeWorld");
+    int projMatrixLocation = glGetUniformLocation(programID, "proj"),
+        viewMatrixLocation = glGetUniformLocation(programID, "view"),
+        modelTMatrixLocation = glGetUniformLocation(programID, "modelT"),
+        modelRMatrixLocation = glGetUniformLocation(programID, "modelR"),
+        lightAmbient = glGetUniformLocation(programID, "light.ambient"),
+        lightDiffuse = glGetUniformLocation(programID, "light.diffuse"),
+        lightPosition = glGetUniformLocation(programID, "light.position"),
+        lightSpecular = glGetUniformLocation(programID, "light.specular"),
+        materialAmbient = glGetUniformLocation(programID, "material.ambientColor"),
+        materialDiffuse = glGetUniformLocation(programID, "material.diffuseColor"),
+        materialSpecular = glGetUniformLocation(programID, "material.specularColor"),
+        materialSpecularExp = glGetUniformLocation(programID, "material.specularExponent"),
+        eyeLocation = glGetUniformLocation(programID, "eyeWorld");
 
     glUseProgram(programID);
-
 
     glUniform3fv(lightPosition, 1, light.position);
     glUniform3fv(lightAmbient, 1, light.ambient);
@@ -289,12 +261,11 @@ int main()
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        meshes[1].setPosition(meshPos);
+        currentObject->setPosition(currentObjectPosition);
 
         view.lookAt(c);
-//        view.badLookAt(c.eye, c.target, c.up);
-        glUniform3f(eyeLocation, c.eye.x, c.eye.y, c.eye.z);
 
+        glUniform3f(eyeLocation, c.eye.x, c.eye.y, c.eye.z);
         glUniformMatrix4fv(projMatrixLocation, 1, GL_FALSE, &projection.getMatrix()[0]);
         glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, &view.getMatrix()[0]);
 
@@ -306,14 +277,12 @@ int main()
 
             GLSLGroup group = mesh.getGroups()[0];
 
-        //        glActiveTexture(GL_TEXTURE0);
             Material material = materialLibrary.getMaterial(group.getMaterialName());
 
             glUniform3fv(materialAmbient, 1, material.getAmbientColor());
             glUniform3fv(materialDiffuse, 1, material.getDiffuseColor());
             glUniform3fv(materialSpecular, 1, material.getSpecularColor());
             glUniform1f(materialSpecularExp, material.getSpecularExponent());
-            //        std::cout << ambient[0] << " " << ambient[1] << " " << ambient[2] << '\n';
 
             GLuint textureID = materialLibrary.getMaterialTexture(group.getMaterialName());
 
@@ -323,8 +292,6 @@ int main()
 
             glDrawArrays(GL_TRIANGLES, 0, group.getVertexCount());
         }
-
-//        glUniform1i(texturePixelsLocation, 0);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

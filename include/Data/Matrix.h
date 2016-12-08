@@ -17,7 +17,6 @@ class Matrix4
 
         Vector4 operator*(const Vector4& v);
         Matrix4 operator*(const Matrix4& m1);
-//        Vector4 multiplyMat4xVec4(const Matrix4& m, Vector4);
     protected:
     private:
         float m[16] = {0};

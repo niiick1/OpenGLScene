@@ -24,11 +24,8 @@ View::~View()
 //  -eye.x, -eye.y, -eye.z, 1
 void View::lookAt(Vector3 eye, Vector3 target, Vector3 up)
 {
-//    Vector3 zaxis = normalize(Vector3(eye.x - target.x, eye.y - target.y, eye.z - target.z));
     Vector3 zaxis = Vector3(eye.x - target.x, eye.y - target.y, eye.z - target.z).normalize();
-//    Vector3 xaxis = normalize(crossProduct(up, zaxis));
     Vector3 xaxis = up.crossProduct(zaxis).normalize();
-//    Vector3 yaxis = crossProduct(zaxis, xaxis);
     Vector3 yaxis = zaxis.crossProduct(xaxis);
 
 //    std::cout << "Eye: " << eye.x << ' ' << eye.y << ' ' << eye.z << '\n';
@@ -51,9 +48,6 @@ void View::lookAt(Vector3 eye, Vector3 target, Vector3 up)
     view[10] = zaxis.z;
     view[11] = 0;
 
-//    view[12] = -dotProduct(xaxis, eye);
-//    view[13] = -dotProduct(yaxis, eye);
-//    view[14] = -dotProduct(zaxis, eye);
     view[12] = -xaxis.dotProduct(eye);
     view[13] = -yaxis.dotProduct(eye);
     view[14] = -zaxis.dotProduct(eye);
@@ -114,33 +108,3 @@ void View::badLookAt(Vector3 eye, Vector3 target, Vector3 up)
         std::cout << '\n';
     }
 }
-
-//Vector3 View::crossProduct(Vector3 v0, Vector3 v1)
-//{
-//    return Vector3((v0.y * v1.z - (v0.z * v1.y)), (v0.z * v1.x - (v0.x * v1.z)), (v0.x * v1.y - (v0.y * v1.x)));
-//}
-//
-//Vector3 View::normalize(Vector3 v)
-//{
-//    float length = sqrt((v.x * v.x) + (v.y * v.y) + (v.z * v.z));
-//
-//    return Vector3(v.x / length, v.y / length, v.z / length);
-//}
-//
-//float View::dotProduct(Vector3 v0, Vector3 v1)
-//{
-//    return v0.x*v1.x + v0.y*v1.y + v0.z*v1.z;
-//}
-
-//Vector4 View::multiplyMat4xVec4(const Matrix4& m, Vector4 v)
-//{
-//    const int SIZE = 4;
-//
-//    float r[4] = {0};
-//
-//    for (int x = 0; x < SIZE; x++) {
-//        r[x] = m[x]*v.x + m[x + SIZE]*v.y + m[x + SIZE*2]*v.z + m[x + SIZE*3]*v.w;
-//    }
-//
-//    return Vector4(r[0], r[1], r[2], r[3]);
-//}

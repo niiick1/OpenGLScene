@@ -18,9 +18,6 @@ class View
         void badLookAt(Vector3 eye, Vector3 center, Vector3 up);
         std::vector<float>& getMatrix() { return view; }
 
-//        Vector3 crossProduct(Vector3 v0, Vector3 v1);
-//        Vector3 normalize(Vector3 v);
-//        float dotProduct(Vector3 v0, Vector3 v1);
     protected:
     private:
 
